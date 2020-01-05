@@ -1,9 +1,7 @@
 package com.springboot.until;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import org.junit.jupiter.api.Test;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
@@ -23,7 +21,6 @@ public class TokenUtils {
 
     /**
      * 生成token
-     *
      * @param id 一般传入userName
      * @return
      */
@@ -56,14 +53,14 @@ public class TokenUtils {
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(SECRET);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
-        // Let's set the JWT Claims
+        // 设置 JWT Claims
         JwtBuilder builder = Jwts.builder().setId(id)
                 .setIssuedAt(now)
                 .setSubject(subject)
                 .setIssuer(issuer)
                 .signWith(signatureAlgorithm, signingKey);
 
-        // if it has been specified, let's add the expiration
+        // 如果已经指定，添加过期时间
         if (ttlMillis >= 0) {
             long expMillis = nowMillis + ttlMillis;
             Date exp = new Date(expMillis);
@@ -75,13 +72,33 @@ public class TokenUtils {
 
     }
 
-    // Sample method to validate and read the JWT
+    // 验证和读取jwt的示例方法
     public static Claims parseJWT(String jwt) {
         // This line will throw an exception if it is not a signed JWS (as expected)
         Claims claims = Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET))
                 .parseClaimsJws(jwt).getBody();
         return claims;
+    }
+
+    public static boolean verifyToken(String id,String token){
+        try{
+            Claims t = parseJWT(token);
+            return t.getId().equals(id)?true:false;
+        }catch (MalformedJwtException e){
+            System.out.println("token长度错误");
+            return false;
+        }catch (ExpiredJwtException e){
+            System.out.println("token已过时");
+            return false;
+        }
+    }
+
+    @Test
+    public void test1(){
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMTExMSIsImlhdCI6MTU3ODExOTA4Niwic3ViIjoieHh4eEAxMjYuY29tIiwiaXNzIjoid3d3Lnh4eHguY29tIiwiZXhwIjoxNTc4MTIyNjg2fQ.faOhPFgD3qksVkc4AE_Nz6H59PHr9Tw0NlUQ5NCy6Yg";
+        System.out.println(verifyToken("1",createJwtToken("1")));
+        System.out.println(verifyToken("1",token));
     }
 
 }

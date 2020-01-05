@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.mapper.AdminMapper">
+
+    <resultMap id="BaseResultMap" type="com.springboot.entity.Admin">
+        <result column="admId" jdbcType="INTEGER" property="admId" />
+        <result column="admName" jdbcType="VARCHAR" property="admName" />
+        <result column="admPassword" jdbcType="VARCHAR" property="admPassword" />
+        <result column="admLevel" jdbcType="INTEGER" property="admLevel" />
+    </resultMap>
+
+    <select id="getAdmin" resultType="com.springboot.entity.Admin">
+        select * from admin where admId = #{admId}
+    </select>
+
+</mapper>

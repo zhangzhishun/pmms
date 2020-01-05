@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.mapper.StudentMapper">
+
+    <resultMap id="BaseResultMap" type="com.springboot.entity.Student">
+        <result column="stuId" jdbcType="INTEGER" property="stuId" />
+        <result column="stuPassword" jdbcType="VARCHAR" property="stuPassword" />
+        <result column="stuName" jdbcType="VARCHAR" property="stuName" />
+        <result column="stuSex" jdbcType="VARCHAR" property="stuSex" />
+        <result column="stuPhoto" jdbcType="VARCHAR" property="stuPhoto" />
+        <result column="stuOriginPlace" jdbcType="VARCHAR" property="stuOriginPlace" />
+        <result column="stuclassId" jdbcType="INTEGER" property="stuclassId" />
+        <result column="stuContactInformation" jdbcType="VARCHAR" property="stuContactInformation" />
+        <result column="stuAddress" jdbcType="VARCHAR" property="stuAddress" />
+        <result column="stuPartyDues" jdbcType="INTEGER" property="stuPartyDues" />
+    </resultMap>
+
+    <select id="getStudent" resultType="com.springboot.entity.Student">
+        select * from student where stuId = #{stuId}
+    </select>
+
+</mapper>
