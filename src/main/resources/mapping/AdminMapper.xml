@@ -43,7 +43,7 @@
         and b.applyState = 1
     </select>
 
-    <!-- 获取指定学号的Student对象的所有信息 -->
+    <!-- 获取指定学号的Student对象的所有信息 按时间倒序 -->
     <select id="getStudentByStuId" resultType="java.util.Map">
         select *
         from ((((student a inner join stuclass b on a.stuclassId = b.stuclassId)
@@ -52,5 +52,6 @@
         inner join applyinfo d on a.stuId = d.stuId)
         inner join level e on e.levelId = d.levelId
         where a.stuId = #{stuId} and d.applyState = 1
+        order by applyTime desc
     </select>
 </mapper>
