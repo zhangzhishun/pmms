@@ -1,10 +1,9 @@
 package com.springboot.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.springboot.service.StudentService;
 import com.springboot.service.AdminService;
-import com.springboot.until.TokenUtils;
+import com.springboot.until.token.TokenUtils;
 import com.springboot.until.httpResult.HttpResult;
 import com.springboot.until.httpResult.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -29,62 +29,48 @@ public class LoginController {
     @Autowired
     AdminService adminService;
 
-
     @PostMapping("/stuLogin")
-    public Object stuLogin(@RequestParam("username") String stuId,@RequestParam("password") String stuPassword,HttpServletResponse response){
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArr = new JSONArray();
-        System.out.println("login被访问");
+    public Object stuLogin(@RequestParam("username") String stuId, @RequestParam("password") String stuPassword, HttpServletRequest request){
+        System.out.println("stuLogin访问");
         Integer loginReq = studentService.login(Integer.valueOf(stuId),stuPassword);
-        // 登陆成功
         if(loginReq == 200){
-            String token = TokenUtils.createJwtToken("username");
-            System.out.println(token);
-            Cookie cookie = new Cookie("token", token);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-            jsonObject.put("base", HttpResult.success());
-            jsonObject.put("token", token);
+            // 登陆成功
+            request.getSession().setAttribute("stuId", stuId);
+            return new HttpResult();
         }else if(loginReq == 400){
             // 密码错误
-            jsonObject.put("base", HttpResult.failure(ResultCode.PARAMETER_ERROR));
+            return new HttpResult(ResultCode.PARAMETER_ERROR);
         }
         else if(loginReq == 404){
             // 账号不存在
-            jsonObject.put("base", HttpResult.failure(ResultCode.NOT_FOUND));
+            return new HttpResult(ResultCode.NOT_FOUND);
         }else if(loginReq == 500){
             // 网络异常
-            jsonObject.put("base", HttpResult.failure(ResultCode.GATEWAY_TIMEOUT));
+            return new HttpResult(ResultCode.GATEWAY_TIMEOUT);
         }
-        return jsonObject;
+        return null;
     }
 
     @PostMapping("/adminLogin")
-    public Object adminLogin(@RequestParam("username") String admId,@RequestParam("password") String admPassword,HttpServletResponse response){
-        JSONObject jsonObject = new JSONObject();
-        System.out.println("login被访问");
-        Integer loginReq = adminService.login(Integer.valueOf(admId),admPassword);
-        // 登陆成功
+    public Object adminLogin(@RequestParam("username") String admName,@RequestParam("password") String admPassword,HttpServletRequest request){
+        System.out.println("adminLogin访问"+admName);
+        Integer loginReq = adminService.login(admName,admPassword);
         if(loginReq == 200){
-            String token = TokenUtils.createJwtToken("username");
-            System.out.println(token);
-            Cookie cookie = new Cookie("token", token);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-            jsonObject.put("base", HttpResult.success());
-            jsonObject.put("token", token);
+            // 登陆成功
+            request.getSession().setAttribute("admLevel", loginReq);
+            return new HttpResult(adminService.getAdminByName(admName));
         }else if(loginReq == 400){
             // 密码错误
-            jsonObject.put("base", HttpResult.failure(ResultCode.PARAMETER_ERROR));
+            return new HttpResult(ResultCode.PARAMETER_ERROR);
         }
         else if(loginReq == 404){
             // 账号不存在
-            jsonObject.put("base", HttpResult.failure(ResultCode.NOT_FOUND));
+            return new HttpResult(ResultCode.NOT_FOUND);
         }else if(loginReq == 500){
             // 网络异常
-            jsonObject.put("base", HttpResult.failure(ResultCode.GATEWAY_TIMEOUT));
+            return new HttpResult(ResultCode.GATEWAY_TIMEOUT);
         }
-        return jsonObject;
+        return null;
     }
 
 }

@@ -9,8 +9,48 @@
         <result column="admLevel" jdbcType="INTEGER" property="admLevel" />
     </resultMap>
 
-    <select id="getAdmin" resultType="com.springboot.entity.Admin">
+    <!-- 根据AdminId获取指定Admin对象 -->
+    <select id="getAdminById" resultType="com.springboot.entity.Admin">
         select * from admin where admId = #{admId}
     </select>
 
+    <!-- 根据AdminName获取指定Admin对象 -->
+    <select id="getAdminByName" resultType="com.springboot.entity.Admin">
+        select * from admin where admName = #{admName}
+    </select>
+
+    <!-- 获取所有Student对象的申请信息 -->
+    <select id="getAllParty" resultType="java.util.Map">
+        select * from student a inner join applyinfo b
+    </select>
+
+    <!--
+        获取指定支部的所有Student对象的申请信息
+        只返回他通过申请的最高的级别对应的信息
+        比如正式党员只显示正式党员的信息
+        -->
+    <select id="getAllPartyByPartyBranch" resultType="java.util.Map">
+        select * from (((student a
+        inner join stuclass s on s.stuclassId = a.stuclassId)
+        inner join applyinfo b on a.stuId = b.stuId)
+        inner join level e on e.levelId = b.levelId)
+        inner join major f on f.majorId = s.majorId
+        where (a.stuId,b.levelId) in
+            (select a.stuId, Max(b.levelId) as Maxlevel
+            from (student a inner join applyinfo b on a.stuId = b.stuId)
+            group by a.stuId)
+        and f.majorId = #{partyBranch}
+        and b.applyState = 1
+    </select>
+
+    <!-- 获取指定学号的Student对象的所有信息 -->
+    <select id="getStudentByStuId" resultType="java.util.Map">
+        select *
+        from ((((student a inner join stuclass b on a.stuclassId = b.stuclassId)
+        inner join teacher t on b.teaId = t.teaId)
+        inner join major c on b.majorId = c.majorId)
+        inner join applyinfo d on a.stuId = d.stuId)
+        inner join level e on e.levelId = d.levelId
+        where a.stuId = #{stuId} and d.applyState = 1
+    </select>
 </mapper>

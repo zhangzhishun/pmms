@@ -11,9 +11,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Stuclass {
-    private Integer stuclassId;
-    private String stuclassName;
-    private Integer majorId;
-    private Integer teaId;
+public class File {
+    private Integer fileType;
+    private Integer stuId;
+    private String filePath;
+    private String fileName;
+    private String fileTime;
 }

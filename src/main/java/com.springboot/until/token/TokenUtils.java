@@ -1,4 +1,4 @@
-package com.springboot.until;
+package com.springboot.until.token;
 
 import io.jsonwebtoken.*;
 import org.junit.jupiter.api.Test;

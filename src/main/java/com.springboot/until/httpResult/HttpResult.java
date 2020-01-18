@@ -47,11 +47,23 @@ public class HttpResult<T> implements Serializable {
     }
     /**
      * 返回成功的实体
-     * @param obj
+     * @param data
      */
-    public HttpResult(T obj) {
+    public HttpResult(T data) {
         this.code = 200;
-        this.data = obj;
+        this.data = data;
+        this.success = true;
+    }
+
+    /**
+     * 返回成功的实体
+     * @param msg
+     * @param data
+     */
+    public HttpResult(String msg,T data) {
+        this.code = 200;
+        this.msg = msg;
+        this.data = data;
         this.success = true;
     }
 
@@ -60,59 +72,65 @@ public class HttpResult<T> implements Serializable {
      * @param resultCode
      */
     public HttpResult(ResultCode resultCode) {
-        this.success = false;
+        this.success = true;
         this.code = resultCode.getCode();
         this.msg = resultCode.getMessage();
+        this.data = null;
     }
 
     /**
-     * 返回错误信息
-     * @param code
-     * @param message
+     * 返回自定义信息
+     * @param success  是否成功
+     * @param code  代码
+     * @param message  消息
+     * @param data  数据
      */
-    public HttpResult(int code, String message) {
-        this.success = false;
+    public HttpResult(boolean success, int code, String message, T data) {
+        this.success = success;
         this.code = code;
         this.msg = message;
+        this.data = data;
     }
 
-    /**
-     * 成功直接返回数据和状态
-     * @param data
-     * @param <T>
-     * @return
-     */
-    public static<T> HttpResult<T> success(T data){
-        return new HttpResult<T>(data);
+    public Integer getCode() {
+        return code;
     }
 
-    /**
-     * 成功 不返回数据
-     * @param <T>
-     * @return
-     */
-    public static<T> HttpResult<T> success(){
-        return new HttpResult();
-    }
-    /**
-     * 失败的时候调用(失败码，失败信息)
-     * @param code 失败码
-     * @param msg 失败信息
-     * @param <T>
-     * @return
-     */
-    public static<T> HttpResult<T> failure(Integer code, String msg){
-        return  new HttpResult<T>(code,msg);
+    public void setCode(Integer code) {
+        this.code = code;
     }
 
-    /**
-     * 失败的时候调用(返回值code)
-     * @param resultCode
-     * @param <T>
-     * @return
-     */
-    public static<T> HttpResult<T> failure(ResultCode resultCode){
-        return  new HttpResult<T>(resultCode);
+    public String getMsg() {
+        return msg;
     }
 
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpResult{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                ", success=" + success +
+                ", data=" + data +
+                '}';
+    }
 }

@@ -1,9 +1,12 @@
 package com.springboot.service;
 
+import com.springboot.entity.Admin;
 import com.springboot.entity.Stuclass;
 import com.springboot.mapper.AdminMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author eternalSy
@@ -13,17 +16,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminService {
     @Autowired
-    AdminMapper adminMapper;
+    private AdminMapper adminMapper;
 
     /** 判断账号密码是否匹配
-     * 200：账号密码正确
+     * 账号密码正确： 返回值为admLevel
      * 400：密码错误
      * 404：账号不存在
      * 500：网络异常
      * */
-    public Integer login(Integer admId,String admPassword) {
+    public Integer login(String adminName,String admPassword) {
         try {
-            if(admPassword.equals(adminMapper.getAdmin(admId).getAdmPassword())){
+            Admin admin = adminMapper.getAdminByName(adminName);
+            if(admPassword.equals(admin.getAdmPassword())){
                 return 200;
             }else{
                 return 400;
@@ -35,5 +39,33 @@ public class AdminService {
             // 其他异常：可能是网络问题等
             return 500;
         }
+    }
+
+    /**
+     * 根据adminName获取admin对象
+     * */
+    public Admin getAdminByName(String admName){
+        return adminMapper.getAdminByName(admName);
+    }
+
+    /**
+     * 获取所有admin
+     * */
+    public List<Object> getAllParty(){
+        return adminMapper.getAllParty();
+    }
+
+    /**
+     * 获取指定支部所有admin
+     * */
+    public List<Object> getAllPartyByPartyBranch(Integer partyBranch){
+        return adminMapper.getAllPartyByPartyBranch(partyBranch);
+    }
+
+    /**
+     * 获取指定学生所有信息
+     * */
+    public List<Object> getStudentByStuId(Integer stuId){
+        return adminMapper.getStudentByStuId(stuId);
     }
 }
