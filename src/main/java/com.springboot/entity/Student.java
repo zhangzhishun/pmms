@@ -18,7 +18,7 @@ public class Student {
     private String stuSex;
     private String stuPhoto;
     private String stuOriginPlace;
-    private Integer stuclassId;
+    private Integer stuClassId;
     private String stuContactInformation;
     private String stuAddress;
     private Integer stuPartyDues;

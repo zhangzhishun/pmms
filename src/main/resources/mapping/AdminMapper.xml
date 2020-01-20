@@ -43,7 +43,7 @@
         and b.applyState = 1
     </select>
 
-    <!-- 获取指定学号的Student对象的所有信息 按时间倒序 -->
+    <!-- 获取指定学号的Student对象的所有申请信息 按applyId倒序 -->
     <select id="getStudentByStuId" resultType="java.util.Map">
         select *
         from ((((student a inner join stuclass b on a.stuclassId = b.stuclassId)
@@ -52,6 +52,24 @@
         inner join applyinfo d on a.stuId = d.stuId)
         inner join level e on e.levelId = d.levelId
         where a.stuId = #{stuId} and d.applyState = 1
-        order by applyTime desc
+        order by d.applyId desc
+    </select>
+
+
+    <!-- 根据支部和学生身份筛选学生  pb：支部编号  level：学生身份等级 -->
+    <select id="getStudentByPBAndLevel" resultType="java.util.Map">
+        select * from ((((student a
+        inner join stuclass s on a.stuclassId = s.stuclassId)
+        inner join applyinfo b on a.stuId = b.stuId)
+        inner join teacher t on s.teaId = t.teaId)
+        inner join major c on s.majorId = c.majorId)
+        inner join level e on e.levelId = b.levelId
+        where (a.stuId,b.levelId) in
+        (select a.stuId, Max(b.levelId) as Maxlevel
+        from (student a inner join applyinfo b on a.stuId = b.stuId)
+        group by a.stuId)
+        and c.majorId = #{pb}
+        and b.applyState = 1
+        and b.levelId = #{level}
     </select>
 </mapper>

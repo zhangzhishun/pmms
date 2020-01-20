@@ -15,6 +15,11 @@ spring:
       enabled: true  #设置开启热部署
   freemarker:
     cache: false    #页面不加载缓存，修改即时生效
+  jackson:
+    #jackson相关配置 设置所有时间返回的规则
+    date-format: yyyy-MM-dd HH:mm:ss
+    #时区必须要设置
+    time-zone: GMT+8
 
 debug: true
 

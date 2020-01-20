@@ -11,10 +11,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class File {
-    private Integer fileType;
+public class ApplyInfo {
+    private Integer applyId;
     private Integer stuId;
-    private String filePath;
+    private String applyTime;
+    private Integer levelId;
+    private Integer applyState;
     private String fileName;
-    private String fileTime;
 }

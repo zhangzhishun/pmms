@@ -1,7 +1,6 @@
 package com.springboot.service;
 
 import com.springboot.entity.Admin;
-import com.springboot.entity.Stuclass;
 import com.springboot.mapper.AdminMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,5 +66,14 @@ public class AdminService {
      * */
     public List<Object> getStudentByStuId(Integer stuId){
         return adminMapper.getStudentByStuId(stuId);
+    }
+
+    /**
+     * 根据支部和学生身份筛选学生
+     * pb：支部编号
+     * level：学生身份等级
+     * */
+    public List<Object> getStudentByPBAndLevel(Integer pb, Integer level){
+        return adminMapper.getStudentByPBAndLevel(pb,level);
     }
 }

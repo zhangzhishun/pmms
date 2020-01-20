@@ -11,7 +11,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Partybranch {
+public class PartyBranch {
     private Integer pbId;
     private String pdName;
 }

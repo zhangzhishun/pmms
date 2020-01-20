@@ -11,9 +11,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Stuclass {
-    private Integer stuclassId;
-    private String stuclassName;
+public class StuClass {
+    private Integer stuClassId;
+    private String stuClassName;
     private Integer majorId;
     private Integer teaId;
 }

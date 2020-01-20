@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.mapper.StuClassMapper">
+
+    <resultMap id="BaseResultMap" type="com.springboot.entity.StuClass">
+        <result column="stuClassId" jdbcType="INTEGER" property="stuClassId" />
+        <result column="stuClassName" jdbcType="VARCHAR" property="stuClassName" />
+        <result column="majorId" jdbcType="INTEGER" property="majorId" />
+        <result column="teaId" jdbcType="INTEGER" property="teaId" />
+    </resultMap>
+
+    <select id="getStuClassByName" resultType="com.springboot.entity.StuClass">
+        select * from stuclass where stuClassName = #{stuClassName}
+    </select>
+
+</mapper>

@@ -15,8 +15,16 @@
         <result column="stuPartyDues" jdbcType="INTEGER" property="stuPartyDues" />
     </resultMap>
 
-    <select id="getStudent" resultType="com.springboot.entity.Student">
+    <select id="getStudentById" resultType="com.springboot.entity.Student">
         select * from student where stuId = #{stuId}
     </select>
 
+    <update id="updateStudent"  parameterType="com.springboot.entity.Student">
+         update student SET stuName=#{stuName},stuSex=#{stuSex},stuOriginPlace=#{stuOriginPlace},stuClassId=#{stuClassId},stuContactInformation=#{stuContactInformation}
+         where stuId=#{stuId}
+    </update>
+
+    <delete id="delStudentByStuId" parameterType="int">
+        delete from student where stuId=#{stuId}
+    </delete>
 </mapper>
