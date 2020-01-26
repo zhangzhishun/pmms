@@ -1,8 +1,6 @@
 package com.springboot.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * @author eternalSy
@@ -11,6 +9,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor                 //无参构造
+@AllArgsConstructor                //有参构造
 public class ApplyInfo {
     private Integer applyId;
     private Integer stuId;

@@ -17,4 +17,7 @@ public interface ApplyInfoMapper {
 
     /** 更新ApplyInfo表 */
     Integer updateApplyInfo(ApplyInfo applyInfo);
+
+    /** 添加数据到applyInfo表 */
+    Integer insertApplyInfo(ApplyInfo applyInfo);
 }

@@ -21,4 +21,11 @@
          where levelId=#{levelId} and stuId=#{stuId}
     </update>
 
+
+    <!-- 插入applyInfo方法 -->
+    <insert id="insertApplyInfo" parameterType="com.springboot.entity.ApplyInfo">
+        insert into applyinfo
+        values(#{applyId},#{stuId},#{applyTime},#{levelId},#{applyState},#{fileName})
+    </insert>
+
 </mapper>

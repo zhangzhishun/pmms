@@ -5,6 +5,8 @@ import com.springboot.mapper.StudentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 200 - 请求成功
  * 404 - 请求的资源（网页等）不存在
@@ -41,6 +43,23 @@ public class StudentService {
     }
 
     /**
+     * 获取指定学生所有信息
+     * */
+    public List<Object> getStudentByStuId(Integer stuId){
+        return studentMapper.getStudentByStuId(stuId);
+    }
+
+    /**
+     * 根据支部和学生身份筛选学生
+     * pb：支部编号
+     * level：学生身份等级
+     * */
+    public List<Object> getStudentByPBAndLevel(Integer pb, Integer level){
+        return studentMapper.getStudentByPBAndLevel(pb,level);
+    }
+
+
+    /**
      * 根据stuId获取Student对象
      * */
     public Student getStudentById(Integer stuId){
@@ -55,5 +74,10 @@ public class StudentService {
     /** 删除Student表 */
     public Integer delStudentByStuId(Integer stuId){
         return studentMapper.delStudentByStuId(stuId);
+    }
+
+    /** 添加数据到Student表 */
+    public Integer insertStudent(Student student){
+        return studentMapper.insertStudent(student);
     }
 }

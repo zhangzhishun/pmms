@@ -28,4 +28,9 @@ public class ApplyInfoService {
     public Integer updateApplyInfo(ApplyInfo applyInfo){
         return applyInfoMapperImpl.updateApplyInfo(applyInfo);
     }
+
+    /** 添加数据到applyInfo表 */
+    public Integer insertApplyInfo(ApplyInfo applyInfo){
+        return applyInfoMapperImpl.insertApplyInfo(applyInfo);
+    }
 }
