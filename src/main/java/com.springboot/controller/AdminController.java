@@ -2,6 +2,7 @@ package com.springboot.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.springboot.entity.*;
 import com.springboot.service.*;
 import com.springboot.until.DealDate;
@@ -43,6 +44,9 @@ public class AdminController {
     @Autowired
     ApplyInfoService applyInfoServiceImpl;
 
+    /** 文件保存路径 */
+    String filePathHead = "E:\\file\\study\\Vue\\pmms-vue\\pmms\\src\\assets\\upload\\";
+    String filePathFile = "F:\\pmms\\";
     /**
      * 根据支部获取支部内所有党员信息
      * */
@@ -57,9 +61,9 @@ public class AdminController {
      * 根据学号获取学生信息
      * */
     @GetMapping("/getStudentByStuId/{StuId}")
-    public Object getStudentByStuId(@PathVariable("StuId") Integer StuId){
-        System.out.println("stuLogin 查找学号："+ StuId );
-        List<Object> result = studentServiceImpl.getStudentByStuId(StuId);
+    public Object getStudentByStuId(@PathVariable("StuId") Integer stuId){
+        System.out.println("stuLogin 查找学号："+ stuId );
+        List<Object> result = studentServiceImpl.getStudentByStuId(stuId);
         return new HttpResult(result);
     }
 
@@ -74,9 +78,9 @@ public class AdminController {
     }
 
     @GetMapping("/getApplyInfoByStuId/{StuId}")
-    public Object getApplyInfoByStuId(@PathVariable("StuId") Integer StuId){
-        System.out.println("stuLogin 查找学号："+ StuId );
-        List<ApplyInfo> result = applyInfoServiceImpl.getApplyInfoByStuId(StuId);
+    public Object getApplyInfoByStuId(@PathVariable("StuId") Integer stuId){
+        System.out.println("stuLogin 查找学号："+ stuId );
+        List<ApplyInfo> result = applyInfoServiceImpl.getApplyInfoByStuId(stuId);
         return new HttpResult(result);
     }
 
@@ -112,7 +116,7 @@ public class AdminController {
         if (newStudent.getStuOriginPlace() != stuOriginPlace) {
             newStudent.setStuOriginPlace(stuOriginPlace);
         }
-        if (stuClass.getStuClassId() != newStudent.getStuId()) {
+        if (!stuClass.getStuClassId().equals(newStudent.getStuId())) {
             newStudent.setStuClassId(stuClass.getStuClassId());
         }
         if (newStudent.getStuContactInformation() != stuContactInformation) {
@@ -123,6 +127,7 @@ public class AdminController {
         // 获取到的ApplyInfo顺序和前端传过来的applyInfo顺序一致  都是按着applyId排序的  所以如果时间改变直接设置时间就可
         List<ApplyInfo> applyInfo = applyInfoServiceImpl.getApplyInfoByStuId(stuId);
         JSONArray jsonArrayApplyTime = JSONArray.parseArray(jsonObject.getString("applyTime"));
+        JSONArray jsonArrayApplyFile = JSONArray.parseArray(jsonObject.getString("fileName"));
         ApplyInfo temp;
         Integer updateApplyInfoResult = 1;
         for (int i = 0; i < jsonArrayApplyTime.size(); i++) {
@@ -131,14 +136,18 @@ public class AdminController {
             String time = temp.getApplyTime().substring(0, temp.getApplyTime().indexOf("."));
             // 如果用户传过来的数据和数据库中的数据不一致那么进行更改
             if(!time.equals(jsonArrayApplyTime.getString(i))){
-                // 先获取后台传过来的levelId然后付
                 temp.setApplyTime(DealDate.dealDateFormat(jsonArrayApplyTime.getString(i)));
-                // 如果更新ApplyInfo表成功那么继续  否则直接返回错误
-                if(applyInfoServiceImpl.updateApplyInfo(temp) > 0){
-                   continue;
-                }else{
-                    return new HttpResult(ResultCode.GATEWAY_TIMEOUT);
-                }
+            }
+            System.out.println("TEMP:::" + temp.getFileName());
+            // 如果用户传过来的数据和数据库中的数据不一致那么进行更改
+            if(!temp.getFileName().equals(jsonArrayApplyFile.getString(i))){
+                temp.setFileName(jsonArrayApplyFile.getString(i));
+            }
+            // 如果更新ApplyInfo表成功那么继续  否则直接返回错误
+            if(applyInfoServiceImpl.updateApplyInfo(temp) > 0){
+                continue;
+            }else{
+                return new HttpResult(ResultCode.GATEWAY_TIMEOUT);
             }
         }
         /** 如果学生基本信息和申请信息全部更新成功 返回成功提示（data字段返回值为1）*/
@@ -168,7 +177,7 @@ public class AdminController {
         String stuContactInformation = jsonObject.getString("stuContactInformation");
         String stuAddress = jsonObject.getString("stuAddress");
         /* 从data中读取需要的数据存到student表 */
-        String fileName = jsonObject.getString("fileName");
+        String fileName = JSONArray.parseArray(jsonObject.getString("fileName")).get(0).toString();
 
         if(studentServiceImpl.getStudentById(stuId) != null){
             return new HttpResult(false, 200,"用户已存在", "error");
@@ -192,16 +201,51 @@ public class AdminController {
     }
 
     /**
+     * 添加积极分子及以上
+     * */
+    @PostMapping("addApplyInfo")
+    public Object addApplyInfo(@RequestParam("data") String data) {
+        System.out.println(data);
+        /* 从data中读取需要的数据 然后存到applyinfo表 */
+        JSONObject jsonObject = JSONObject.parseObject(data);
+        Integer stuId = jsonObject.getInteger("stuId");
+        String stuName = jsonObject.getString("stuName");
+        Integer levelId = jsonObject.getInteger("levelId");
+        String fileName = JSONArray.parseArray(jsonObject.getString("fileName")).get(0).toString();
+        Student student = studentServiceImpl.getStudentById(stuId);
+        // 如果用户输入的学生名和学号相匹配
+        if(student != null && stuName.equals(student.getStuName())){
+            // 如果该学生对应等级的申请已经提交 那么输出提示  否则插入新数据
+            ApplyInfo applyInfo = applyInfoServiceImpl.getApplyInfoByStuIdLevelId(stuId,levelId);
+            if(applyInfo != null){
+                return new HttpResult(false, 200,"该学生已经通过"+
+                        levelServiceImpl.getLevelById(levelId).getLevelName() +"身份", "error");
+            }else{
+                // 默认申请通过
+                applyInfoServiceImpl.insertApplyInfo(new ApplyInfo(null,stuId,null,levelId,1,fileName));
+                return new HttpResult(1);
+            }
+        }else {
+            // 如果 stuName.equals(studentServiceImpl.getStudentById(stuId) 报空指针异常代表数据库中没有该stuId
+            return new HttpResult(false, 200,"学号和名字不匹配", "error");
+        }
+    }
+
+    /**
      * 接收图片和文件
      * */
     @PostMapping("uploadHeadFile")
     public Object uploadHeadFile(MultipartFile file) {
         System.out.println("获取到图片或文字");
         String fileName[] = file.getOriginalFilename().split("\\.");
-        String filePath = "F:\\pmms\\";
-        String uploadName = FileUtils.createtFileName(fileName[0])+"."+fileName[1];
+        String uploadName = FileUtils.createtFileName() + "." +fileName[1];
+        System.out.println("uploadName" + uploadName);
         try {
-            FileUtils.upload(file.getBytes(), filePath,uploadName);
+            if("jpeg".equals(fileName[1]) || "jpg".equals(fileName[1]) || "png".equals(fileName[1])){
+                FileUtils.upload(file.getBytes(), filePathHead,uploadName);
+            }else{
+                FileUtils.upload(file.getBytes(), filePathFile,uploadName);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -209,9 +253,9 @@ public class AdminController {
     }
 
     @GetMapping("/delStudentByStuId/{StuId}")
-    public Object delStudentByStuId(@PathVariable("StuId") Integer StuId){
-        System.out.println("stuLogin 查找学号："+ StuId );
-        Integer result = studentServiceImpl.delStudentByStuId(StuId);
+    public Object delStudentByStuId(@PathVariable("StuId") Integer stuId){
+        System.out.println("stuLogin 查找学号："+ stuId );
+        Integer result = studentServiceImpl.delStudentByStuId(stuId);
         return new HttpResult(result);
     }
 

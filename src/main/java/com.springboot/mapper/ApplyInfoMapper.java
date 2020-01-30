@@ -20,4 +20,7 @@ public interface ApplyInfoMapper {
 
     /** 添加数据到applyInfo表 */
     Integer insertApplyInfo(ApplyInfo applyInfo);
+
+    /** 根据stuId和levelId获取applyinfo表 */
+    ApplyInfo getApplyInfoByStuIdLevelId(Integer stuId,Integer levelId);
 }

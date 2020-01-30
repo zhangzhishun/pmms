@@ -2,6 +2,7 @@ package com.springboot.service;
 
 import com.springboot.entity.Student;
 import com.springboot.mapper.StudentMapper;
+import com.springboot.until.httpResult.HttpResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +64,13 @@ public class StudentService {
      * 根据stuId获取Student对象
      * */
     public Student getStudentById(Integer stuId){
-        return studentMapper.getStudentById(stuId);
+        Student student ;
+        try{
+            student = studentMapper.getStudentById(stuId);
+        }catch (NullPointerException e){
+            return null;
+        }
+        return student;
     }
 
     /** 更新Student表 */

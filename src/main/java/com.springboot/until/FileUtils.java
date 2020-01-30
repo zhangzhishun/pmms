@@ -3,6 +3,7 @@ package com.springboot.until;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author eternalSy
@@ -28,11 +29,10 @@ public class FileUtils {
         out.close();
     }
 
-    public static synchronized String createtFileName(String suffix) {
-        java.util.Date dt = new java.util.Date(System.currentTimeMillis());
+    public static synchronized String createtFileName() {
+        Date dt = new Date(System.currentTimeMillis());
         SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String fileName= fmt.format(dt);
-        fileName = fileName + suffix;
         return fileName;
     }
 }

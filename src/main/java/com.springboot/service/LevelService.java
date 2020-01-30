@@ -22,4 +22,12 @@ public class LevelService {
     public Level getLevelByName(String levelName) {
         return levelMapper.getLevelByName(levelName);
     }
+
+    public Level getLevelById(Integer levelId) {
+        return levelMapper.getLevelById(levelId);
+    }
+
+    public Level getLevelBylevelIdStuId(Integer levelId,Integer stuId){
+        return levelMapper.getLevelBylevelIdStuId(levelId,stuId);
+    }
 }

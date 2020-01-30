@@ -17,7 +17,7 @@
     </select>
 
     <update id="updateApplyInfo"  parameterType="com.springboot.entity.ApplyInfo">
-         update applyinfo SET applyTime=#{applyTime}
+         update applyinfo SET applyTime=#{applyTime} , fileName=#{fileName}
          where levelId=#{levelId} and stuId=#{stuId}
     </update>
 
@@ -27,5 +27,9 @@
         insert into applyinfo
         values(#{applyId},#{stuId},#{applyTime},#{levelId},#{applyState},#{fileName})
     </insert>
+
+    <select id="getApplyInfoByStuIdLevelId" resultType="com.springboot.entity.ApplyInfo">
+        select * from applyInfo where stuId = #{stuId} and levelId = #{levelId}
+    </select>
 
 </mapper>

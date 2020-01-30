@@ -2,6 +2,7 @@ package com.springboot.service;
 
 import com.springboot.entity.ApplyInfo;
 import com.springboot.mapper.ApplyInfoMapper;
+import com.springboot.until.httpResult.HttpResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,16 @@ public class ApplyInfoService {
     /** 添加数据到applyInfo表 */
     public Integer insertApplyInfo(ApplyInfo applyInfo){
         return applyInfoMapperImpl.insertApplyInfo(applyInfo);
+    }
+
+    /** 根据stuId和levelId获取applyinfo表 */
+    public ApplyInfo getApplyInfoByStuIdLevelId(Integer stuId,Integer levelId){
+        ApplyInfo applyInfo;
+        try{
+            applyInfo = applyInfoMapperImpl.getApplyInfoByStuIdLevelId(stuId, levelId);
+        }catch (NullPointerException e){
+            return null;
+        }
+        return applyInfo;
     }
 }
