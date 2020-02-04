@@ -46,7 +46,7 @@ public class StudentService {
     /**
      * 获取指定学生所有信息
      * */
-    public List<Object> getStudentByStuId(Integer stuId){
+    public List<Object> getStuAllInfoByStuId(Integer stuId){
         return studentMapper.getStudentByStuId(stuId);
     }
 
@@ -63,7 +63,7 @@ public class StudentService {
     /**
      * 根据stuId获取Student对象
      * */
-    public Student getStudentById(Integer stuId){
+    public Student getStudentByStuId(Integer stuId){
         Student student ;
         try{
             student = studentMapper.getStudentById(stuId);

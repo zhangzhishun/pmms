@@ -22,7 +22,7 @@
 
     <!-- 更新student方法 -->
     <update id="updateStudent"  parameterType="com.springboot.entity.Student">
-         update student SET stuName=#{stuName},stuSex=#{stuSex},stuOriginPlace=#{stuOriginPlace},stuClassId=#{stuClassId},stuContactInformation=#{stuContactInformation}
+         update student SET  stuPassword=#{stuPassword},stuName=#{stuName},stuSex=#{stuSex},stuOriginPlace=#{stuOriginPlace},stuClassId=#{stuClassId},stuContactInformation=#{stuContactInformation}
          where stuId=#{stuId}
     </update>
 
@@ -41,10 +41,11 @@
     <!-- 获取指定学号的Student对象的所有申请信息 按applyId倒序 -->
     <select id="getStudentByStuId" resultType="java.util.Map">
         select *
-        from ((((student a inner join stuclass b on a.stuclassId = b.stuclassId)
+        from (((((student a inner join stuclass b on a.stuclassId = b.stuclassId)
         inner join teacher t on b.teaId = t.teaId)
         inner join major c on b.majorId = c.majorId)
         inner join applyinfo d on a.stuId = d.stuId)
+        inner join partybranch p on p.pbId = c.pbId)
         inner join level e on e.levelId = d.levelId
         where a.stuId = #{stuId} and d.applyState = 1
         order by d.applyId desc

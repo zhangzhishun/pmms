@@ -2,7 +2,6 @@ package com.springboot.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.springboot.entity.*;
 import com.springboot.service.*;
 import com.springboot.until.DealDate;
@@ -10,14 +9,10 @@ import com.springboot.until.FileUtils;
 import com.springboot.until.httpResult.HttpResult;
 import com.springboot.until.httpResult.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -63,7 +58,7 @@ public class AdminController {
     @GetMapping("/getStudentByStuId/{StuId}")
     public Object getStudentByStuId(@PathVariable("StuId") Integer stuId){
         System.out.println("stuLogin 查找学号："+ stuId );
-        List<Object> result = studentServiceImpl.getStudentByStuId(stuId);
+        List<Object> result = studentServiceImpl.getStuAllInfoByStuId(stuId);
         return new HttpResult(result);
     }
 
@@ -102,7 +97,7 @@ public class AdminController {
         System.out.println("updateStudent 查找：" + jsonObject.get("stuId"));
 
         // 传入的学号对应的学生信息
-        Student newStudent = studentServiceImpl.getStudentById(stuId);
+        Student newStudent = studentServiceImpl.getStudentByStuId(stuId);
         // 传入的班级名对应的班级信息
         StuClass stuClass = stuClassServiceImpl.getStuClassByName(stuClassName);
 
@@ -179,11 +174,11 @@ public class AdminController {
         /* 从data中读取需要的数据存到student表 */
         String fileName = JSONArray.parseArray(jsonObject.getString("fileName")).get(0).toString();
 
-        if(studentServiceImpl.getStudentById(stuId) != null){
+        if(studentServiceImpl.getStudentByStuId(stuId) != null){
             return new HttpResult(false, 200,"用户已存在", "error");
         }
         // 添加学生基本信息到student数据库表
-        Student insertStu = new Student(stuId,stuPassword,stuName,stuSex,stuPhoto,stuOriginPlace,stuClassId,stuContactInformation,stuAddress,0);
+        Student insertStu = new Student(stuId,stuPassword,stuName,stuSex,stuPhoto,stuOriginPlace,stuClassId,stuContactInformation,stuAddress,2);
         // 返回值为插入学生的学号
         Integer insertStuId = studentServiceImpl.insertStudent(insertStu);
         // 如果Student表插入成功 继续向applyInfo表插入数据
@@ -212,7 +207,7 @@ public class AdminController {
         String stuName = jsonObject.getString("stuName");
         Integer levelId = jsonObject.getInteger("levelId");
         String fileName = JSONArray.parseArray(jsonObject.getString("fileName")).get(0).toString();
-        Student student = studentServiceImpl.getStudentById(stuId);
+        Student student = studentServiceImpl.getStudentByStuId(stuId);
         // 如果用户输入的学生名和学号相匹配
         if(student != null && stuName.equals(student.getStuName())){
             // 如果该学生对应等级的申请已经提交 那么输出提示  否则插入新数据
@@ -226,7 +221,7 @@ public class AdminController {
                 return new HttpResult(1);
             }
         }else {
-            // 如果 stuName.equals(studentServiceImpl.getStudentById(stuId) 报空指针异常代表数据库中没有该stuId
+            // 如果 stuName.equals(studentServiceImpl.getStudentByStuId(stuId) 报空指针异常代表数据库中没有该stuId
             return new HttpResult(false, 200,"学号和名字不匹配", "error");
         }
     }
