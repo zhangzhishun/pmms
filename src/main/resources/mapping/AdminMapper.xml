@@ -43,5 +43,9 @@
         and b.applyState = 1
     </select>
 
-
+    <!-- 更新Admin方法 -->
+    <update id="updateAdmin"  parameterType="com.springboot.entity.Admin">
+         update admin SET admPassword=#{admPassword},admLevel=#{admLevel}
+         where admName=#{admName}
+    </update>
 </mapper>

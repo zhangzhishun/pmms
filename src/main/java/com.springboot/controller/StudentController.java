@@ -1,9 +1,14 @@
 package com.springboot.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.springboot.entity.ApplyInfo;
 import com.springboot.entity.Student;
 import com.springboot.service.AdminService;
+import com.springboot.service.ApplyInfoService;
 import com.springboot.service.StudentService;
 import com.springboot.until.httpResult.HttpResult;
+import com.springboot.until.httpResult.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +30,8 @@ public class StudentController {
     StudentService studentServiceImpl;
     @Autowired
     AdminService adminServiceImpl;
+    @Autowired
+    ApplyInfoService applyInfoServiceImpl;
 
     /**
      * 根据学号获取学生信息
@@ -76,5 +83,40 @@ public class StudentController {
             }
         }
         return new HttpResult(result);
+    }
+
+    /**
+     * 学生上传资料
+     * 所有数据都在data字段里
+     * */
+    @PostMapping("/updateFile")
+    public Object addStudent(@RequestParam("data") String data ){
+        System.out.println(data);
+        /* 从data中读取需要的数据存到applyinfo表 */
+        JSONObject jsonObject = JSONObject.parseObject(data);
+        Integer stuId = jsonObject.getInteger("stuId");
+        Integer levelId = jsonObject.getInteger("levelId");
+        /* 从data中读取需要的数据存到applyinfo表 */
+        String fileName = "";
+        if(JSONArray.parseArray(jsonObject.getString("fileName")).size()>0){
+            fileName = JSONArray.parseArray(jsonObject.getString("fileName")).get(0).toString();
+        }
+        // 基本信息到applyInfo数据库表
+        ApplyInfo applyInfo = applyInfoServiceImpl.getApplyInfoByStuIdLevelId(stuId,levelId);
+        if(applyInfo!=null){
+            applyInfo.setFileName(fileName);
+            // 返回值为插入更新的申请信息的返回结果
+            Integer updateResult = applyInfoServiceImpl.updateApplyInfo(applyInfo);
+            // 如果ApplyInfo表更新成功
+            if (updateResult > 0) {
+                return new HttpResult(1);
+            }else{
+                return new HttpResult(ResultCode.GATEWAY_TIMEOUT);
+            }
+        }else{
+            return new HttpResult(false, 200,"数据库不存在该学生该等级信息", "error");
+        }
+
+
     }
 }

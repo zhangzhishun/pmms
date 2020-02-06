@@ -63,6 +63,15 @@ public class AdminController {
     }
 
     /**
+     * 根据管理员名字获取管理员信息
+     * */
+    @GetMapping("/getAdminByAdmName/{admName}")
+    public Object getStudentByStuId(@PathVariable("admName") String admName){
+        Admin result = adminServiceImpl.getAdminByName(admName);
+        return new HttpResult(result);
+    }
+
+    /**
      * 根据支部编号和级别获取满足条件的所有学生
      * */
     @PostMapping("/getStudentByPBAndLevel")
@@ -172,8 +181,10 @@ public class AdminController {
         String stuContactInformation = jsonObject.getString("stuContactInformation");
         String stuAddress = jsonObject.getString("stuAddress");
         /* 从data中读取需要的数据存到student表 */
-        String fileName = JSONArray.parseArray(jsonObject.getString("fileName")).get(0).toString();
-
+        String fileName = "";
+        if(JSONArray.parseArray(jsonObject.getString("fileName")).size()>0){
+            fileName = JSONArray.parseArray(jsonObject.getString("fileName")).get(0).toString();
+        }
         if(studentServiceImpl.getStudentByStuId(stuId) != null){
             return new HttpResult(false, 200,"用户已存在", "error");
         }
@@ -247,10 +258,36 @@ public class AdminController {
         return new HttpResult(uploadName);
     }
 
+    /**
+     * 根据学号删除学生
+     * */
     @GetMapping("/delStudentByStuId/{StuId}")
     public Object delStudentByStuId(@PathVariable("StuId") Integer stuId){
         System.out.println("stuLogin 查找学号："+ stuId );
         Integer result = studentServiceImpl.delStudentByStuId(stuId);
+        return new HttpResult(result);
+    }
+
+    /**
+     * 更新管理员信息
+     * */
+    @PostMapping("updateAdminPsw")
+    public Object updateAdmin(@RequestParam("admName") String admName,@RequestParam("admPassword") String admPassword,
+                              @RequestParam("newPsw") String newPsw){
+        Integer result ;
+        Admin admin = adminServiceImpl.getAdminByName(admName);
+        // 根据管理员名字查找管理员如果结果为null
+        if(admin == null){
+            return new HttpResult(false, 200,"该管理员不存在", "error");
+        }else{
+            // 如果原密码和用户传进来的一致 那么更新Admin  否则直接返回消息提示
+            if(admPassword.equals(admin.getAdmPassword())){
+                admin.setAdmPassword(newPsw);
+                result = adminServiceImpl.updateAdmin(admin);
+            }else{
+                return new HttpResult(false, 200,"原密码输入错误", "error");
+            }
+        }
         return new HttpResult(result);
     }
 

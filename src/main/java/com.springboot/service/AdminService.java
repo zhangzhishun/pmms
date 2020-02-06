@@ -61,5 +61,12 @@ public class AdminService {
         return adminMapper.getAllPartyByPartyBranch(partyBranch);
     }
 
+    /**
+     * 更新Admin
+     * */
+    public Integer updateAdmin(Admin admin){
+        return adminMapper.updateAdmin(admin);
+    }
+
 
 }
