@@ -217,8 +217,12 @@ public class AdminController {
         Integer stuId = jsonObject.getInteger("stuId");
         String stuName = jsonObject.getString("stuName");
         Integer levelId = jsonObject.getInteger("levelId");
-        String fileName = JSONArray.parseArray(jsonObject.getString("fileName")).get(0).toString();
         Student student = studentServiceImpl.getStudentByStuId(stuId);
+
+        String fileName = "";
+        if(JSONArray.parseArray(jsonObject.getString("fileName")).size()>0){
+            fileName = JSONArray.parseArray(jsonObject.getString("fileName")).get(0).toString();
+        }
         // 如果用户输入的学生名和学号相匹配
         if(student != null && stuName.equals(student.getStuName())){
             // 如果该学生对应等级的申请已经提交 那么输出提示  否则插入新数据
