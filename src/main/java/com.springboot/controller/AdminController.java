@@ -295,4 +295,16 @@ public class AdminController {
         return new HttpResult(result);
     }
 
+    /**
+     * 更新党费状态
+     * */
+    @PostMapping("updateStuPartyDues")
+    public Object updateStuPartyDues(@RequestParam("stuId") Integer stuId,@RequestParam("stuName") String stuName,
+                                     @RequestParam("stuPartyDues") Integer stuPartyDues ){
+        Student stu = studentServiceImpl.getStudentByStuId(stuId);
+        stu.setStuPartyDues(stuPartyDues);
+        System.out.println(stu.toString());
+        return new HttpResult(studentServiceImpl.updateStudent(stu));
+    }
+
 }

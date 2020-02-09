@@ -1,6 +1,7 @@
 package com.springboot.mapper;
 
 import com.springboot.entity.Admin;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface AdminMapper {
      * @param  admId 管理员ID
      * @return  Admin
      * */
-    Admin getAdminById(Integer admId);
+    Admin getAdminById(@Param("admId") Integer admId);
 
     /** 根据admName获取Admin表 */
     Admin getAdminByName(String admName);
@@ -26,11 +27,9 @@ public interface AdminMapper {
     List<Object> getAllParty();
 
     /** 获取指定支部所有党员信息 */
-    List<Object> getAllPartyByPartyBranch(Integer partyBranch);
+    List<Object> getAllPartyByPartyBranch(@Param("partyBranch") Integer partyBranch);
 
     /** 更新Admin */
     Integer updateAdmin(Admin admin);
-
-
 
 }

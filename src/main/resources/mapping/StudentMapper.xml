@@ -22,7 +22,7 @@
 
     <!-- 更新student方法 -->
     <update id="updateStudent"  parameterType="com.springboot.entity.Student">
-         update student SET  stuPassword=#{stuPassword},stuName=#{stuName},stuSex=#{stuSex},stuOriginPlace=#{stuOriginPlace},stuClassId=#{stuClassId},stuContactInformation=#{stuContactInformation}
+         update student SET  stuPassword=#{stuPassword},stuName=#{stuName},stuSex=#{stuSex},stuOriginPlace=#{stuOriginPlace},stuClassId=#{stuClassId},stuContactInformation=#{stuContactInformation},stuPartyDues=#{stuPartyDues}
          where stuId=#{stuId}
     </update>
 

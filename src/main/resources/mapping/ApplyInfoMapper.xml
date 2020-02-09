@@ -25,7 +25,7 @@
     <!-- 插入applyInfo方法 -->
     <insert id="insertApplyInfo" parameterType="com.springboot.entity.ApplyInfo">
         insert into applyinfo
-        values(#{applyId},#{stuId},#{applyTime},#{levelId},#{applyState},#{fileName})
+        values(#{applyId},#{stuId},now(),#{levelId},#{applyState},#{fileName})
     </insert>
 
     <select id="getApplyInfoByStuIdLevelId" resultType="com.springboot.entity.ApplyInfo">

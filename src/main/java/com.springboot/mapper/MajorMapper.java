@@ -1,6 +1,7 @@
 package com.springboot.mapper;
 
 import com.springboot.entity.Major;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,5 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface MajorMapper {
 
     /** 根据stuId获取Student表 */
-    Major getMajorByName(String majorName);
+    Major getMajorByName(@Param("majorName") String majorName);
 }

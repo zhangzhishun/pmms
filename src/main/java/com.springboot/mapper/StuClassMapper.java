@@ -1,6 +1,7 @@
 package com.springboot.mapper;
 
 import com.springboot.entity.StuClass;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,5 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface StuClassMapper {
 
     /** 根据stuId获取Student表 */
-    StuClass getStuClassByName(String stuClassName);
+    StuClass getStuClassByName(@Param("stuClassName") String stuClassName);
 }

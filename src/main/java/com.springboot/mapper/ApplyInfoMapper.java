@@ -1,6 +1,7 @@
 package com.springboot.mapper;
 
 import com.springboot.entity.ApplyInfo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface ApplyInfoMapper {
 
     /** 根据stuId获取该学生涉及的所有Applyinfo表 */
-    List<ApplyInfo> getApplyInfoByStuId(Integer stuId);
+    List<ApplyInfo> getApplyInfoByStuId(@Param("stuId") Integer stuId);
 
     /** 更新ApplyInfo表 */
     Integer updateApplyInfo(ApplyInfo applyInfo);
@@ -22,5 +23,5 @@ public interface ApplyInfoMapper {
     Integer insertApplyInfo(ApplyInfo applyInfo);
 
     /** 根据stuId和levelId获取applyinfo表 */
-    ApplyInfo getApplyInfoByStuIdLevelId(Integer stuId,Integer levelId);
+    ApplyInfo getApplyInfoByStuIdLevelId(@Param("stuId") Integer stuId,@Param("levelId") Integer levelId);
 }
